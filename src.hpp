@@ -117,9 +117,8 @@ struct Transposition { // 对换
 
     void apply(int* permutation, size_t size) const {
         // TODO: 将对换应用permutation上，直接修改permutation指向的数组。保证size>a且size>b。
-        int temp = permutation[a];
-        permutation[a] = permutation[b];
-        permutation[b] = temp;
+        Permutation p = toPermutation(size);
+        p.apply(permutation);
     }
 
     friend std::ostream& operator<<(std::ostream& os, const Transposition& t) {
@@ -179,15 +178,15 @@ struct Cycle { // 轮换
         delete[] elements;
     }
 
-    void apply(int* permutation, size_t size) const {
+    void apply(int* permutation, size_t perm_size) const {
         // TODO: 将轮换应用大小为size的permutation上，直接修改permutation指向的数组。保证size>=elements[i]。
         if (this->size == 0) return;
 
-        int temp = permutation[elements[this->size - 1]];
-        for (int i = this->size - 1; i > 0; i--) {
-            permutation[elements[i]] = permutation[elements[i - 1]];
-        }
-        permutation[elements[0]] = temp;
+        // Create the permutation representation of this cycle
+        Permutation p = toPermutation(perm_size);
+
+        // Apply the permutation
+        p.apply(permutation);
     }
 
     friend std::ostream& operator<<(std::ostream& os, const Cycle& c) {
